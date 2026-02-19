@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        android:text="Замовлення піци"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/edit_client_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ваше ім'я"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Виберіть інгредієнти:" />
+
+    <CheckBox
+        android:id="@+id/check_cheese"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Подвійний сир" />
+
+    <CheckBox
+        android:id="@+id/check_meat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="М'ясо (бекон/курка)" />
+
+    <CheckBox
+        android:id="@+id/check_mushrooms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Гриби" />
+
+    <Button
+        android:id="@+id/btn_ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="ОК" />
+
+</LinearLayout>
