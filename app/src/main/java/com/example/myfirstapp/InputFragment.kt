@@ -1,5 +1,7 @@
 package com.example.myfirstapp
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -7,41 +9,58 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 
 class InputFragment : Fragment(R.layout.fragment_input) {
-
-    // Використовуємо делегат, який раніше видавав помилку
-    private val viewModel: PizzaViewModel by activityViewModels()
+    private val viewModel: FlowerViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val editName = view.findViewById<EditText>(R.id.edit_client_name)
-        val checkCheese = view.findViewById<CheckBox>(R.id.check_cheese)
-        val checkMeat = view.findViewById<CheckBox>(R.id.check_meat)
-        val checkMushrooms = view.findViewById<CheckBox>(R.id.check_mushrooms)
+        val editFlower = view.findViewById<EditText>(R.id.edit_flower_name)
+        val groupColor = view.findViewById<RadioGroup>(R.id.group_color)
+        val groupPrice = view.findViewById<RadioGroup>(R.id.group_price)
         val btnOk = view.findViewById<Button>(R.id.btn_ok)
+        val btnHistory = view.findViewById<Button>(R.id.btn_history)
 
         btnOk.setOnClickListener {
-            val name = editName.text.toString().trim()
-            val hasIngredients = checkCheese.isChecked || checkMeat.isChecked || checkMushrooms.isChecked
+            val flowerName = editFlower.text.toString()
+            val colorId = groupColor.checkedRadioButtonId
+            val priceId = groupPrice.checkedRadioButtonId
 
-            if (name.isEmpty() || !hasIngredients) {
-                // Вимога лаби: вікно, що спливає (Toast)
-                Toast.makeText(context, "Завершіть введення всіх даних!", Toast.LENGTH_SHORT).show()
+            if (flowerName.isEmpty() || colorId == -1 || priceId == -1) {
+                Toast.makeText(context, "Заповніть усі дані!", Toast.LENGTH_SHORT).show()
             } else {
-                val ingredients = mutableListOf<String>()
-                if (checkCheese.isChecked) ingredients.add("Сир")
-                if (checkMeat.isChecked) ingredients.add("М'ясо")
-                if (checkMushrooms.isChecked) ingredients.add("Гриби")
+                val color = view.findViewById<RadioButton>(colorId).text.toString()
+                val price = view.findViewById<RadioButton>(priceId).text.toString()
+                val result = "Квітка: $flowerName, Колір: $color, Ціна: $price"
 
-                // Зберігаємо дані у ViewModel
-                viewModel.orderDetails.value = "Замовник: $name\nСклад: ${ingredients.joinToString(", ")}"
+                // 1. Передаємо в ViewModel
+                viewModel.orderDetails.value = result
 
-                // Переходимо до ResultFragment
+                // 2. Записуємо у файл (Лаба 3)
+                saveToFile(result)
+
+                // 3. Перехід до ResultFragment
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, ResultFragment())
-                    .addToBackStack(null) // Дозволяє повернутися назад кнопкою Android
+                    .addToBackStack(null)
                     .commit()
             }
+        }
+
+        btnHistory.setOnClickListener {
+            val intent = Intent(activity, HistoryActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun saveToFile(data: String) {
+        try {
+            val fileContent = "$data\n"
+            context?.openFileOutput("flower_orders.txt", Context.MODE_APPEND).use { output ->
+                output?.write(fileContent.toByteArray())
+            }
+            Toast.makeText(context, "Запис успішний!", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Помилка запису", Toast.LENGTH_SHORT).show()
         }
     }
 }
